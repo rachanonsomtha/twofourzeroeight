@@ -14,7 +14,7 @@ namespace twozerofoureight
     {
         Model model;
         Controller controller;
-       
+      
         public TwoZeroFourEightView()
         {
             InitializeComponent();
@@ -28,6 +28,12 @@ namespace twozerofoureight
         public void Notify(Model m)
         {
             UpdateBoard(((TwoZeroFourEightModel) m).GetBoard());
+            UpdateScore(((TwoZeroFourEightModel) m).Getscore());
+        }
+
+        public void UpdateScore(int score)
+        {
+            textBox1.Text = Convert.ToString(score);
         }
 
         private void UpdateTile(Label l, int i)
@@ -35,6 +41,8 @@ namespace twozerofoureight
             if (i != 0)
             {
                 l.Text = Convert.ToString(i);
+             
+                
             } else {
                 l.Text = "";
             }
@@ -97,5 +105,9 @@ namespace twozerofoureight
             controller.ActionPerformed(TwoZeroFourEightController.DOWN);
         }
 
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+         
+        }
     }
 }
