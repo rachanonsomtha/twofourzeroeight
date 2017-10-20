@@ -61,6 +61,7 @@
             this.lbl00.Size = new System.Drawing.Size(51, 51);
             this.lbl00.TabIndex = 0;
             this.lbl00.Text = "0";
+            
             // 
             // lbl01
             // 
@@ -94,6 +95,7 @@
             this.lbl03.Size = new System.Drawing.Size(51, 51);
             this.lbl03.TabIndex = 3;
             this.lbl03.Text = "0";
+           
             // 
             // lbl13
             // 

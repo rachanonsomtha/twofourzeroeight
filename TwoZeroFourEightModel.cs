@@ -10,8 +10,13 @@ namespace twozerofoureight
     {
         protected int boardSize; // default is 4
         protected int[,] board;
+        
         protected Random rand;
-        public int score;
+        public int score = 0;
+        protected int ISOver = 0;
+        public bool isFull = false;
+
+
 
         public TwoZeroFourEightModel() : this(4)
         {
@@ -22,18 +27,24 @@ namespace twozerofoureight
         {
             return board;
         }
-        public int Getscore()
+       
+
+        public int GetScore()
         {
             return score;
         }
+
+
         public TwoZeroFourEightModel(int size)
         {
             boardSize = size;
             board = new int[boardSize, boardSize];
             var range = Enumerable.Range(0, boardSize);
-            foreach(int i in range) {
-                foreach(int j in range) {
-                    board[i,j] = 0;
+            foreach (int i in range)
+            {
+                foreach (int j in range)
+                {
+                    board[i, j] = 0;
                 }
             }
             rand = new Random();
@@ -41,10 +52,12 @@ namespace twozerofoureight
             NotifyAll();
         }
 
+
         private int[,] Random(int[,] input)
         {
-            while (true)
-            {
+       
+                while (true)
+                {
                 int x = rand.Next(boardSize);
                 int y = rand.Next(boardSize);
                 if (board[x, y] == 0)
@@ -52,24 +65,26 @@ namespace twozerofoureight
                     board[x, y] = 2;
                     break;
                 }
-                if (board[x, y] != 0) //// screen freeze
-                {
-                    break;
-                }
-
-            }
+              }
+           
             return input;
         }
 
+
         public void PerformDown()
         {
+            int[] check;
+
             int[] buffer;
             int pos;
             int[] rangeX = Enumerable.Range(0, boardSize).ToArray();
             int[] rangeY = Enumerable.Range(0, boardSize).ToArray();
             Array.Reverse(rangeY);
+
+            
             foreach (int i in rangeX)
             {
+                check = new int[4];
                 pos = 0;
                 buffer = new int[4];
                 foreach (int k in rangeX)
@@ -78,7 +93,9 @@ namespace twozerofoureight
                 }
                 //shift left
                 foreach (int j in rangeY)
+
                 {
+                    check[j] = board[j, i];
                     if (board[j, i] != 0)
                     {
                         buffer[pos] = board[j, i];
@@ -91,10 +108,13 @@ namespace twozerofoureight
                     if (j > 0 && buffer[j] != 0 && buffer[j] == buffer[j - 1])
                     {
                         buffer[j - 1] *= 2;
+                       
                         buffer[j] = 0;
                         score += buffer[j - 1];
                     }
+
                 }
+
                 // shift left again
                 pos = 3;
                 foreach (int j in rangeX)
@@ -103,6 +123,7 @@ namespace twozerofoureight
                     {
                         board[pos, i] = buffer[j];
                         pos--;
+
                     }
                 }
                 // copy back
@@ -110,19 +131,35 @@ namespace twozerofoureight
                 {
                     board[k, i] = 0;
                 }
+                for(int x=0; x < boardSize; x++)
+                {
+                    if(check[x] != board[x, i])
+                    {
+                        isFull = true;
+                    }
+                   
+                }
             }
-            board = Random(board);
+            //      result =
+            if (isFull) {
+                board = Random(board);
+                isFull = false;
+            }
+            
             NotifyAll();
         }
 
         public void PerformUp()
         {
+            int [] check;
             int[] buffer;
             int pos;
-
+            
             int[] range = Enumerable.Range(0, boardSize).ToArray();
             foreach (int i in range)
             {
+                check = new int[4];
+                
                 pos = 0;
                 buffer = new int[4];
                 foreach (int k in range)
@@ -141,12 +178,16 @@ namespace twozerofoureight
                 // check duplicate
                 foreach (int j in range)
                 {
+                    
+                    check[j] = board[j, i];
                     if (j > 0 && buffer[j] != 0 && buffer[j] == buffer[j - 1])
                     {
                         buffer[j - 1] *= 2;
+                        
                         buffer[j] = 0;
                         score += buffer[j - 1];
                     }
+
                 }
                 // shift left again
                 pos = 0;
@@ -163,21 +204,37 @@ namespace twozerofoureight
                 {
                     board[k, i] = 0;
                 }
+                for (int x = 0; x < boardSize; x++)
+                {
+                    if (check[x] != board[x, i])
+                    {
+                        isFull = true;
+                    }
+               
+                }
             }
-            board = Random(board);
+
+
+            if (isFull)
+            {
+                board = Random(board);
+                isFull = false;
+            }
             NotifyAll();
         }
 
         public void PerformRight()
         {
+            int[] check;
             int[] buffer;
             int pos;
-
+       
             int[] rangeX = Enumerable.Range(0, boardSize).ToArray();
             int[] rangeY = Enumerable.Range(0, boardSize).ToArray();
             Array.Reverse(rangeX);
             foreach (int i in rangeY)
             {
+                check = new int[4];
                 pos = 0;
                 buffer = new int[4];
                 foreach (int k in rangeY)
@@ -187,6 +244,7 @@ namespace twozerofoureight
                 //shift left
                 foreach (int j in rangeX)
                 {
+                    check[j] = board[i,j];
                     if (board[i, j] != 0)
                     {
                         buffer[pos] = board[i, j];
@@ -199,9 +257,11 @@ namespace twozerofoureight
                     if (j > 0 && buffer[j] != 0 && buffer[j] == buffer[j - 1])
                     {
                         buffer[j - 1] *= 2;
+                     
                         buffer[j] = 0;
                         score += buffer[j - 1];
                     }
+
                 }
                 // shift left again
                 pos = 3;
@@ -210,6 +270,7 @@ namespace twozerofoureight
                     if (buffer[j] != 0)
                     {
                         board[i, pos] = buffer[j];
+
                         pos--;
                     }
                 }
@@ -218,18 +279,35 @@ namespace twozerofoureight
                 {
                     board[i, k] = 0;
                 }
+                for (int x = 0; x < boardSize; x++)
+                {
+                    if (check[x] != board[i,x])
+                    {
+                        isFull = true;
+
+                    }
+                   
+                }
+            
+        }
+            if (isFull)
+            {
+                board = Random(board);
+                isFull = false;
             }
-            board = Random(board);
             NotifyAll();
         }
 
         public void PerformLeft()
         {
+            int[] check;
             int[] buffer;
             int pos;
+          
             int[] range = Enumerable.Range(0, boardSize).ToArray();
             foreach (int i in range)
             {
+                check = new int[4];
                 pos = 0;
                 buffer = new int[boardSize];
                 foreach (int k in range)
@@ -248,9 +326,12 @@ namespace twozerofoureight
                 // check duplicate
                 foreach (int j in range)
                 {
+                   
+                    check[j] = board[i,j];
                     if (j > 0 && buffer[j] != 0 && buffer[j] == buffer[j - 1])
                     {
                         buffer[j - 1] *= 2;
+                    
                         buffer[j] = 0;
                         score += buffer[j - 1];
                     }
@@ -269,8 +350,23 @@ namespace twozerofoureight
                 {
                     board[i, k] = 0;
                 }
+                for (int x = 0; x < boardSize; x++)
+                {
+                     
+                    if (check[x] != board[i,x])
+                    {
+                        isFull = true;
+                    }
+                    
+                  
+                }
+            
+        }
+            if (isFull)
+            {
+                board = Random(board);
+                isFull = false;
             }
-            board = Random(board);
             NotifyAll();
         }
     }
