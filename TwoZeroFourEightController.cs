@@ -17,6 +17,7 @@ namespace twozerofoureight
         {
 
         }
+        public static object KeyboardInfo { get; private set; }
 
         public override void ActionPerformed(int action)
         {
